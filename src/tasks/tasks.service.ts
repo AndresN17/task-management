@@ -11,8 +11,8 @@ export class TasksService {
     return this.tasks;
   }
 
-  getTaskById(id: string): Task{
-      return this.tasks.find(task=> task.id === id);
+  getTaskById(id: string): Task {
+    return this.tasks.find((task) => task.id === id);
   }
 
   createTask(createTaskDto: CreateTaskDto): Task {
@@ -25,5 +25,9 @@ export class TasksService {
     };
     this.tasks.push(task);
     return task;
+  }
+
+  deleteTask(id: string): void {
+    this.tasks = this.tasks.filter((task) => task.id !== id);
   }
 }
