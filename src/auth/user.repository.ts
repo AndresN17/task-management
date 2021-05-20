@@ -12,13 +12,12 @@ export class UserRepository extends Repository<User> {
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     try {
       const { username, password } = authCredentialsDto;
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const hashedPassword = await bcrypt.hash(password, 12); //Salt should be on a .env
 
       const user = new User();
       user.username = username;
       user.password = hashedPassword;
-      user.salt = salt;
       await user.save();
     } catch (error) {
       if (error.code === '23505') {
@@ -31,11 +30,11 @@ export class UserRepository extends Repository<User> {
 
   async validateUserPassword(
     authCredentialsDto: AuthCredentialsDto,
-  ): Promise<string> {
+  ) {
     const { username, password } = authCredentialsDto;
     const user = await this.findOne({ username });
     if (user && (await user.validatePassword(password))) {
-      return user.username;
+      return username;
     } else {
       return null;
     }
