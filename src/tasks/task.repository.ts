@@ -8,9 +8,11 @@ import { TasksModule } from './tasks.module';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
-  async getTasks(filterDto: GetTaskFilterDto): Promise<Task[]> {
+  async getTasks(filterDto: GetTaskFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
+
+    query.where('task.userId = :userId',{userId: user.id})
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -18,7 +20,7 @@ export class TaskRepository extends Repository<Task> {
 
     if (search) {
       query.andWhere(
-        '(task.title LIKE :search OR task.description LIKE :search)',
+        '(task.title LIKE :search OR task.description LIKE :search )',
         { search: `%${search}%` },
       );
     }
