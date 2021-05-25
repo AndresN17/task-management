@@ -15,5 +15,16 @@ describe('UserRepository', () => {
     userRepository = await module.get<UserRepository>(UserRepository);
   });
 
-  describe('signUp', () => {});
+  describe('signUp', () => {
+      let save;
+      beforeEach(()=>{
+          save = jest.fn();
+          userRepository.create= jest.fn().mockReturnValue( {save});
+      });
+      it("user successfully singsUp",()=>{
+          save.mockResolvedValue(undefined);
+          expect(userRepository.signUp(mockCredentialsDTO)).resolves.not.toThrow();
+
+      })
+  });
 });
