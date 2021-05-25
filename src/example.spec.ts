@@ -1,3 +1,5 @@
+import { iif } from 'rxjs';
+
 class FriendList {
   friends = [];
 
@@ -8,6 +10,15 @@ class FriendList {
 
   announceFriendship(name: string) {
     console.log(name);
+  }
+
+  removeFriend(name: string) {
+    const index = this.friends.indexOf(name);
+    if (index === -1) {
+      throw new Error('Friend not found');
+    }
+
+    this.friends.splice(index, 1);
   }
 }
 
@@ -29,5 +40,19 @@ describe('Friendlist', () => {
     expect(friendList.announceFriendship).not.toHaveBeenCalled();
     friendList.addFriend('Nobara Kugisaki');
     expect(friendList.announceFriendship).toHaveBeenCalled();
+  });
+
+  describe('remove friend', () => {
+    it('removes a friend from the list', () => {
+      const name: string = 'Nobara Kugisaki';
+      friendList.addFriend(name);
+      expect(friendList.friends[0]).toEqual(name);
+      friendList.removeFriend(name);
+      expect(friendList.friends[0]).toBeUndefined();
+    });
+    it("throw an error if friend doesn't exist", () => {
+      const name: string = 'Nobara Kugisaki';
+      expect(() => friendList.removeFriend(name)).toThrow(new Error('Friend not found'));
+    });
   });
 });

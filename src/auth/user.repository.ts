@@ -15,7 +15,7 @@ export class UserRepository extends Repository<User> {
 
       const hashedPassword = await bcrypt.hash(password, 12); //Salt should be on a .env
 
-      const user = new User();
+      const user = this.create();
       user.username = username;
       user.password = hashedPassword;
       await user.save();
@@ -28,9 +28,7 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async validateUserPassword(
-    authCredentialsDto: AuthCredentialsDto,
-  ) {
+  async validateUserPassword(authCredentialsDto: AuthCredentialsDto) {
     const { username, password } = authCredentialsDto;
     const user = await this.findOne({ username });
     if (user && (await user.validatePassword(password))) {
